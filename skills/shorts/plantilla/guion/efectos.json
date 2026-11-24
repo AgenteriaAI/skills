@@ -1,0 +1,9 @@
+[
+ { "fila": 1, "palabra": "veinte", "tipo": "sello", "db": -9, "nota": "se estampa «20 min»" },
+ { "fila": 2, "palabra": "le", "desfase": -0.2, "tipo": "desliza", "db": -13, "nota": "entra el chat" },
+ { "fila": 2, "palabra": "guion", "tipo": "tecla", "db": -14, "nota": "llega el guion" },
+ { "fila": 3, "palabra": "voz", "tipo": "aparece", "db": -13 },
+ { "fila": 3, "palabra": "anima", "tipo": "aparece", "db": -13 },
+ { "fila": 3, "palabra": "renderiza", "tipo": "acierto", "db": -11 },
+ { "fila": 4, "palabra": "sígueme", "tipo": "golpe", "db": -9 }
+]

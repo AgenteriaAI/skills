@@ -1,0 +1,9 @@
+{
+ "_nota": "Guion de ejemplo. Una fila por frase: «voz» sale en los subtítulos; «hablado» (opcional) es lo que se manda a la voz.",
+ "filas": [
+  { "n": 1, "voz": "¡Este Short lo he montado en veinte minutos!", "hablado": "[excited] ¡Este Short lo he montado en veinte minutos!" },
+  { "n": 2, "voz": "Le escribo el tema a Claude y me devuelve el guion.", "hablado": "[fast] Le escribo el tema a Claude y me devuelve el guion." },
+  { "n": 3, "voz": "Después pone la voz, anima cada frase y lo renderiza.", "hablado": "Después pone la voz, anima cada frase… ¡y lo renderiza!" },
+  { "n": 4, "voz": "¡Sígueme para ver el siguiente!", "hablado": "[excited] ¡Sígueme para ver el siguiente!" }
+ ]
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Short</title>
+<!-- Short vertical 1080×1920. La animación está en compositions/short.html; los tiempos, en tiempos/ (herramientas/tiempos.mjs).
+     Cambia el fondo en cada Short: YouTube penaliza el contenido hecho en serie con la misma plantilla. -->
+<script src="vendor/gsap.min.js"></script>
+<script src="kit/kit.js"></script>
+<script src="tiempos/tramos.js"></script>
+<link rel="stylesheet" href="kit/kit.css" />
+<style>
+  @font-face { font-family: 'Archivo'; src: url('fuentes/archivo-latin.woff2') format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; }
+  html, body { margin: 0; background: #0B0B0D; }
+  #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #0B0B0D; font-family: 'Archivo', sans-serif; }
+  /* fondo de ejemplo: degradado y trama de puntos que se desplaza. Cámbialo por uno propio para cada Short. */
+  #fondo { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 30%, #3D7BFF 0%, #1a2a66 40%, #0B0B0D 85%); }
+  #puntos { position: absolute; inset: -120px; background-image: radial-gradient(#ffffff26 2px, transparent 2px); background-size: 34px 34px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="10">
+  <div id="fondo"><div id="puntos"></div></div>
+  <!-- voz -->
+  <div id="short" data-composition-id="short" data-composition-src="compositions/short.html"
+       data-start="0" data-duration="10" data-track-index="1" data-width="1080" data-height="1920"></div>
+</div>
+<script>
+  (function () {
+    const tl = gsap.timeline({ paused: true });
+    const fin = window.TRAMOS[0].duracion;
+    tl.fromTo('#puntos', { x: 0, y: 0 }, { x: -60, y: -80, duration: fin, ease: 'none' }, 0);
+    tl.to({}, { duration: fin }, 0);
+    window.__timelines["main"] = tl;
+  })();
+</script>
+</body>
+</html>

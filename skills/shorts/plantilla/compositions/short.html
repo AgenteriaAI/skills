@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<!-- Composición de ejemplo (4 filas de guion/voz.json). Cada aparición se ancla a una palabra de la voz con
+     A.p(fila, 'palabra'): si cambia la voz, la animación se recoloca sola.
+     Zonas seguras de Shorts: lo importante entre y 230 y 1310 y entre x 60 y 888 (a la derecha van los botones de YouTube);
+     subtítulos en la franja y 1344-1460. Aquí todo va desplazado 66 px (#e-escena) para quedar centrado en 540. -->
+<style>
+  #root { position: absolute; inset: 0; overflow: hidden; background: transparent; font-family: 'Archivo', sans-serif; color: #F4F1EA; }
+  #e-escena { position: absolute; top: 0; bottom: 0; left: 66px; width: 1080px; }
+  #e-flash { position: absolute; left: -120px; right: -120px; top: 0; bottom: 0; background: #fff; opacity: 0; }
+  #e-subs { position: absolute; left: 126px; width: 828px; top: 1344px; height: 116px; font-size: 64px; }
+  .e-c { position: absolute; left: 60px; width: 828px; text-align: center; }
+  #e-cifra { top: 400px; font-size: 270px; color: #FFD60A; text-shadow: 0 30px 90px #000; }
+  #e-sello { position: absolute; left: 230px; top: 900px; font-size: 64px; }
+  #e-chat .k-ventana__titulo { color: #c9c6bf; }
+  #e-chat { left: 90px; top: 330px; width: 768px; }
+  #e-chat .k-msg-ia__quien { font-size: 26px; }
+  .e-linea { font-family: 'JetBrains Mono', monospace; font-size: 30px; color: #c9c6bf; }
+  #e-pasos { position: absolute; left: 60px; width: 828px; top: 420px; display: flex; flex-direction: column; gap: 30px; align-items: center; }
+  #e-pasos span { font-size: 76px; font-weight: 900; padding: 16px 40px; border-radius: 22px; background: #17181Ce6; border: 3px solid #2A2C33; color: #8D909B; }
+  #e-sigue { top: 640px; font-size: 110px; line-height: .95; }
+</style>
+
+<div id="root" data-composition-id="short" data-width="1080" data-height="1920">
+  <div id="e-escena">
+    <div class="e-c k-cifra" id="e-cifra">20 min</div>
+    <div class="k-etiqueta k" id="e-sello">HECHO CON CLAUDE</div>
+
+    <div class="k-ventana k-chat k" id="e-chat">
+      <div class="k-ventana__barra"><span class="k-ventana__marca"></span><span class="k-ventana__titulo"><b>Claude</b> · nuevo Short</span></div>
+      <div class="k-ventana__cuerpo">
+        <div class="k-msg-yo" id="e-yo"></div>
+        <div class="k-msg-ia"><div class="k-msg-ia__quien">Guion</div><div class="e-linea">1. ¡Este Short lo he montado…</div><div class="e-linea">2. Le escribo el tema…</div><div class="e-linea">3. Después pone la voz…</div></div>
+      </div>
+    </div>
+
+    <div id="e-pasos" class="k"><span id="e-p1">voz</span><span id="e-p2">animación</span><span id="e-p3">render</span></div>
+    <div class="e-c k-titular" id="e-sigue">Sígueme</div>
+    <div id="e-flash"></div>
+  </div>
+  <div class="k-subs" id="e-subs"></div>
+</div>
+
+<script src="tiempos/short.js"></script>
+<script>
+(function () {
+  const ID = 'short';
+  const $ = (s) => document.getElementById(s);
+  const T = window.TIEMPOS[ID];
+  const A = Kit.anclas(T);
+  const tl = gsap.timeline({ paused: true });
+  const t2 = A.fila(2).ini, t3 = A.fila(3).ini, t4 = A.fila(4).ini;
+  // el plano que sale se va antes de que entre el siguiente: nunca se cruzan
+  const fuera = (sel, t) => tl.to(sel, { y: -220, scale: 0.9, opacity: 0, duration: 0.18, ease: 'power3.in', stagger: 0.01 }, t - 0.28);
+
+  function construir() {
+    Kit.subtitulos(tl, $('e-subs'), T.palabras, { max: 3, maxLetras: 18, resaltar: '#FFD60A', acento: $('e-escena') });
+    gsap.set('#e-escena', { transformOrigin: '474px 900px' });
+
+    // 1 · el resultado en el primer segundo
+    tl.fromTo('#e-cifra', { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(1.6)' }, 0.05);
+    Kit.sellar(tl, $('e-sello'), A.p(1, 'veinte') - 0.1, { giro: -3, sacudir: $('e-cifra') });
+    fuera(['#e-cifra', '#e-sello'], t2);
+
+    // 2 · el chat: se teclea el tema y llega el guion
+    Kit.entrarVentana(tl, $('e-chat'), t2 - 0.05, { y: 160, dur: 0.45 });
+    Kit.teclear(tl, $('e-yo'), 'Hazme un Short sobre…', t2 + 0.1, 0.6, { cursorFin: t2 + 0.8 });
+    Kit.escalonar(tl, document.querySelectorAll('#e-chat .k-msg-ia > *'), A.p(2, 'guion.') - 0.1, { paso: 0.08 });
+    fuera(['#e-chat'], t3);
+
+    // 3 · voz, animación, render: cada palabra enciende su paso
+    Kit.escalonar(tl, document.querySelectorAll('#e-pasos span'), t3 - 0.05, { paso: 0.06 });
+    [['#e-p1', A.p(3, 'voz,')], ['#e-p2', A.p(3, 'anima')], ['#e-p3', A.p(3, 'renderiza!')]].forEach(([s, t]) =>
+      tl.to(s, { backgroundColor: '#FFD60A', color: '#0B0B0D', borderColor: '#FFD60A', scale: 1.08, duration: 0.15, ease: 'back.out(2)' }, t - 0.05));
+    fuera(['#e-pasos'], t4);
+
+    // 4 · cierre
+    tl.fromTo('#e-sigue', { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2)' }, t4 - 0.05);
+
+    // golpe de cámara y destello en cada corte
+    [t2, t3, t4].forEach((t) => {
+      tl.fromTo('#e-escena', { scale: 1.14 }, { scale: 1, duration: 0.38, ease: 'power3.out', immediateRender: false }, t - 0.06);
+      tl.fromTo('#e-flash', { opacity: 0.35 }, { opacity: 0, duration: 0.18, immediateRender: false }, t - 0.06);
+    });
+    gsap.set(['#e-cifra', '#e-sello', '#e-chat', '#e-pasos span', '#e-sigue'], { opacity: 0 });
+    tl.to({}, { duration: A.dur }, 0);
+    window.__timelines[ID] = tl;
+  }
+  document.fonts.ready.then(construir);
+})();
+</script>
+</template>
+</body>
+</html>
